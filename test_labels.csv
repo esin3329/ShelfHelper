@@ -1,0 +1,3 @@
+image_id,expected_call_number,ocr_call_number,confirmed_call_number,needs_manual_fix
+label-001,아동 219.2-2020-1-9,아동 219.2-2020-1-9,아동 219.2-2020-1-9,false
+label-002,아동 101.0-2020-1,아동 101.0-2020-I,아동 101.0-2020-1,true

@@ -1,0 +1,8 @@
+{
+  "name": "도서 서가 정리 도우미",
+  "short_name": "서가도우미",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f7faf8",
+  "theme_color": "#00643f"
+}
