@@ -9,6 +9,7 @@ const {
   dataStatusMessage,
   findShelf,
   resolveSelectedShelf,
+  shelfGuide,
   sortBooks,
   calculateOcrStats,
   calculateRoute,
@@ -19,6 +20,8 @@ const {
   parseShelvesCsv,
   usableShelves,
   parseLabelsCsv,
+  shelfMapClass,
+  mapShelves,
 } = require("./app.js");
 
 const shelves = [
@@ -29,6 +32,9 @@ const shelves = [
     start_call_number: "아동 219.2-2020-1-9",
     end_call_number: "아동 219.2-2020-1-9",
     direction: "현장 조사 필요",
+    slot_no: 1,
+    slot_start_call_number: "아동 219.2-2020-1-9",
+    slot_end_call_number: "아동 219.2-2020-1-9",
     map_x: 12.5,
     map_y: 34.5,
     map_width: 11,
@@ -63,17 +69,27 @@ function run() {
 
   assert.equal(findShelf(parseCallNumber("아동 219.2-2020-1-9"), shelves).status, "one");
   assert.equal(findShelf(parseCallNumber("아동 219.2-2020-1-9"), shelves).shelf.shelf_id, "8B");
+  assert.equal(findShelf(parseCallNumber("아동 219.2-2020-1-9"), [
+    { ...shelves[0], slot_no: 1, slot_start_call_number: "아동 219.2-2020-1-1", slot_end_call_number: "아동 219.2-2020-1-3" },
+    { ...shelves[0], slot_no: 2, slot_start_call_number: "아동 219.2-2020-1-4", slot_end_call_number: "아동 219.2-2020-1-9" },
+  ]).shelf.slot_no, 2);
+  assert.equal(shelfGuide({ ...shelves[0], slot_no: 2, slot_start_call_number: "아동 219.2-2020-1-4", slot_end_call_number: "아동 219.2-2020-1-9" }), "1층 꿈뜨락-아동-8B · 위에서 2번째 칸 · 아동 219.2-2020-1-4 ~ 아동 219.2-2020-1-9 · 현장 조사 필요");
   assert.equal(findShelf(parseCallNumber("아동 101.0-2020-1"), shelves).status, "none");
   assert.equal(findShelf(parseCallNumber("아동 219.2-2020-1-9"), [{
     ...shelves[0],
     start_call_number: "아동 219.2-2021-1",
     end_call_number: "아동 219.2-2021-9",
+    slot_start_call_number: "아동 219.2-2021-1",
+    slot_end_call_number: "아동 219.2-2021-9",
   }]).status, "none");
   const overlappingShelves = [shelves[0], { ...shelves[0], shelf_id: "8C", label: "1층 꿈뜨락-아동-8C" }];
   const candidateMatch = findShelf(parseCallNumber("아동 219.2-2020-1-9"), overlappingShelves);
   assert.equal(candidateMatch.status, "candidates");
   assert.equal(resolveSelectedShelf(candidateMatch, "8C").shelf_id, "8C");
   assert.equal(resolveSelectedShelf(candidateMatch, "없음"), null);
+  assert.equal(shelfMapClass(shelves[0], "8B"), "shelf active");
+  assert.equal(shelfMapClass(shelves[0], "8C"), "shelf");
+  assert.deepEqual(mapShelves([shelves[0], { ...shelves[0], slot_no: 2 }]), [shelves[0]]);
 
   assert.deepEqual(
     sortBooks(

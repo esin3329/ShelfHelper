@@ -1,0 +1,5 @@
+node_id,x,y,links
+entrance,6,94,lowerAisle
+lowerAisle,18,94,aisle8B
+aisle8B,18,48,8B
+8B,18,40,
